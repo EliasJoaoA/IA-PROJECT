@@ -1,0 +1,110 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .container {
+    background: #ffffff20;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+  }
+  
+  h1 {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    margin: 15px 0 5px;
+    font-weight: bold;
+    text-align: left;
+  }
+  
+  select, input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 16px;
+  }
+  
+  select {
+    background: #fff;
+    color: #333;
+  }
+  
+  input {
+    background: #fff;
+    color: #333;
+  }
+  
+  .submit-btn {
+    background: #0072ff;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .submit-btn:hover {
+    background: #005bb5;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  .resultado {
+    margin-top: 20px;
+    padding: 15px;
+    background: #ffffff90;
+    color: #333;
+    border-radius: 5px;
+  }
+  
+  .resultado table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .resultado th, .resultado td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .resultado th {
+    background-color: #0072ff;
+    color: white;
+  }
+  .hidden {
+    display: none;
+  }
+  
+  #resultado {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #0072ff;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 5px;
+  }
+  
