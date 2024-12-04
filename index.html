@@ -45,8 +45,19 @@
     <label for="tempo">Tempo (𝑡):</label>
     <input type="number" id="tempo" name="tempo" step="0.01" placeholder="Ex.: 5.0">
 
-    <button type="submit" class="submit-btn">Calcular</button>
+    <label for="unidade-tempo">Unidade de Tempo (Será convertido para segundos):</label>
+      <select id="unidade-tempo" name="unidade-tempo">
+        <option value="segundos">Segundos</option>
+        <option value="minutos">Minutos</option>
+        <option value="horas">Horas</option>
+        <option value="dias">Dias</option>
+      </select>
+
+      <button type="submit" class="submit-btn">Calcular</button>
+    </form>
   </form>
+
+  
   <div id="resultado" class="hidden"><h2>Resultados:</h2>
     <table>
       <thead>
