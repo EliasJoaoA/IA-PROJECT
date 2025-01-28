@@ -5,47 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Modelos de Reação no Reator</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Importação do Chart.js -->
 </head>
 <body>
   <div class="container">
-  <h1>Modelos de Reação no Reator</h1>
-  <form id="reaction-form">
-    <label for="model">Selecione o Modelo de r :</label>
-    <select id="model" name="model" required>
-      <option value="" disabled selected>Escolha o modelo</option>
-      <option value="model1">Modelo 1 (Ordem Zero)</option>
-      <option value="model2">Modelo 2 (Ordem Um)</option>
-      <option value="model3">Modelo 3 (Monod)</option>
-    </select>
+    <h1>Modelos de Reação no Reator</h1>
+    <form id="reaction-form">
+      <label for="model">Selecione o Modelo de Reação:</label>
+      <select id="model" name="model" required>
+        <option value="" disabled selected>Escolha o modelo</option>
+        <option value="model1">Modelo 1 (Ordem Zero)</option>
+        <option value="model2">Modelo 2 (Ordem Um)</option>
+        <option value="model3">Modelo 3 (Monod)</option>
+      </select>
 
-    <div id="inputs-model1" class="input-group hidden">
-      <label for="k0">Valor de 𝑘0:</label>
-      <input type="number" id="k0" name="k0" step="0.01" placeholder="Ex.: 0.5">
-    </div>
+      <div id="inputs-model1" class="input-group hidden">
+        <label for="k0">Valor de 𝑘0:</label>
+        <input type="number" id="k0" name="k0" step="0.01" placeholder="Ex.: 0.5">
+      </div>
 
-    <div id="inputs-model2" class="input-group hidden">
-      <label for="k1">Valor de 𝑘1 :</label>
-      <input type="number" id="k1" name="k1" step="0.01" placeholder="Ex.: 0.2">
-    </div>
+      <div id="inputs-model2" class="input-group hidden">
+        <label for="k1">Valor de 𝑘1:</label>
+        <input type="number" id="k1" name="k1" step="0.01" placeholder="Ex.: 0.2">
+      </div>
 
-    <div id="inputs-model3" class="input-group hidden">
-      <label for="muMax">Valor de μ max​ :</label>
-      <input type="number" id="muMax" name="muMax" step="0.01" placeholder="Ex.: 1.0">
+      <div id="inputs-model3" class="input-group hidden">
+        <label for="muMax">Valor de μ max:</label>
+        <input type="number" id="muMax" name="muMax" step="0.01" placeholder="Ex.: 1.0">
 
-      <label for="y">Valor de Y :</label>
-      <input type="number" id="y" name="y" step="0.01" placeholder="Ex.: 0.8">
+        <label for="y">Valor de Y:</label>
+        <input type="number" id="y" name="y" step="0.01" placeholder="Ex.: 0.8">
 
-      <label for="ks">Valor de Ks:</label>
-      <input type="number" id="ks" name="ks" step="0.01" placeholder="Ex.: 0.3">
-    </div>
+        <label for="ks">Valor de Ks:</label>
+        <input type="number" id="ks" name="ks" step="0.01" placeholder="Ex.: 0.3">
+      </div>
 
-    <label for="caInicial">Concentração Inicial (𝐶ₐ₀):</label>
-    <input type="number" id="caInicial" name="caInicial" step="0.01" placeholder="Ex.: 10.0">
+      <label for="caInicial">Concentração Inicial (𝐶ₐ₀):</label>
+      <input type="number" id="caInicial" name="caInicial" step="0.01" placeholder="Ex.: 10.0">
 
-    <label for="tempo">Tempo (𝑡):</label>
-    <input type="number" id="tempo" name="tempo" step="0.01" placeholder="Ex.: 5.0">
+      <label for="tempo">Tempo (𝑡):</label>
+      <input type="number" id="tempo" name="tempo" step="0.01" placeholder="Ex.: 5.0">
 
-    <label for="unidade-tempo">Unidade de Tempo (Será convertido para segundos):</label>
+      <label for="unidade-tempo">Unidade de Tempo (Será convertido para segundos):</label>
       <select id="unidade-tempo" name="unidade-tempo">
         <option value="segundos">Segundos</option>
         <option value="minutos">Minutos</option>
@@ -55,22 +56,26 @@
 
       <button type="submit" class="submit-btn">Calcular</button>
     </form>
-  </form>
 
-  
-  <div id="resultado" class="hidden"><h2>Resultados:</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Parâmetro</th>
-          <th>Valor</th>
-        </tr>
-      </thead>
-      <tbody id="tabela-resultados"></tbody>
-    </table>
-  </div></div> 
-</div>
+    <div id="resultado" class="hidden">
+      <h2>Resultados:</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Parâmetro</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-resultados"></tbody>
+      </table>
+    </div>
 
+    <!-- Div para o Gráfico -->
+    <div id="chart-container" class="hidden">
+      <h2>Gráfico de Concentração</h2>
+      <canvas id="concentrationChart"></canvas>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>

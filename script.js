@@ -17,75 +17,6 @@ document.getElementById('reaction-form').addEventListener('submit', function (e)
   const model = document.getElementById('model').value;
   const caInicial = parseFloat(document.getElementById('caInicial').value || 0);
   const tempo = parseFloat(document.getElementById('tempo').value || 0);
-  let resultado;
-
-  try {
-    if (model === 'model1') {
-      const k0 = parseFloat(document.getElementById('k0').value || 0);
-      resultado = calcularOrdemZero(k0, caInicial, tempo);
-    } else if (model === 'model2') {
-      const k1 = parseFloat(document.getElementById('k1').value || 0);
-      resultado = calcularOrdemUm(k1, caInicial, tempo);
-    } else if (model === 'model3') {
-      const muMax = parseFloat(document.getElementById('muMax').value || 0);
-      const y = parseFloat(document.getElementById('y').value || 0);
-      const ks = parseFloat(document.getElementById('ks').value || 0);
-      resultado = calcularMonod(muMax, y, ks, caInicial, tempo);
-    }
-
-    const resultadoDiv = document.getElementById('resultado');
-    if (resultado !== null) {
-      resultadoDiv.innerHTML = `O resultado da concentração após ${tempo} unidades de tempo é: <strong>${resultado.toFixed(4)}</strong>`;
-      resultadoDiv.classList.remove('hidden');
-    } else {
-      resultadoDiv.innerHTML = 'Não foi possível calcular. Verifique os valores inseridos.';
-      resultadoDiv.classList.remove('hidden');
-    }
-  } catch (error) {
-    console.error('Erro ao calcular:', error.message);
-    alert('Erro ao calcular. Verifique os valores e tente novamente.');
-  }
-});
-
-function calcularOrdemZero(k, caInicial, tempo) {
-  return caInicial - k * tempo;
-}
-
-function calcularOrdemUm(k, caInicial, tempo) {
-  return caInicial * Math.exp(-k * tempo);
-}
-
-function calcularMonod(muMax, y, ks, caInicial, tempo) {
-  const rhs = (muMax / y) * tempo + caInicial;
-  let ca = caInicial;
-  let iteracoes = 0;
-  const maxIteracoes = 100;
-  const tolerancia = 1e-6;
-
-  while (iteracoes < maxIteracoes) {
-    const func = ca + ks * Math.log(ca) - rhs;
-    const derivada = 1 + ks / ca;
-
-    const caNova = ca - func / derivada;
-
-    if (Math.abs(caNova - ca) < tolerancia) {
-      return caNova;
-    }
-
-    ca = caNova;
-    iteracoes++;
-  }
-
-  return null;
-}
-
-
-document.getElementById('reaction-form').addEventListener('submit', function (e) {
-  e.preventDefault();
-
-  const model = document.getElementById('model').value;
-  const caInicial = parseFloat(document.getElementById('caInicial').value || 0);
-  const tempo = parseFloat(document.getElementById('tempo').value || 0);
   const unidadeTempo = document.getElementById('unidade-tempo').value;
 
   // Converter o tempo para segundos
@@ -127,11 +58,46 @@ document.getElementById('reaction-form').addEventListener('submit', function (e)
     tabelaResultados.appendChild(row);
 
     document.getElementById('resultado').classList.remove('hidden');
+
+    // Gerar o gráfico
+    gerarGrafico(caInicial, tempoPadronizado, model, parametros);
   } else {
     document.getElementById('resultado').classList.remove('hidden');
     tabelaResultados.innerHTML = `<tr><td colspan="2">Não foi possível calcular. Verifique os valores inseridos.</td></tr>`;
   }
 });
+
+function calcularOrdemZero(k, caInicial, tempo) {
+  return caInicial - k * tempo;
+}
+
+function calcularOrdemUm(k, caInicial, tempo) {
+  return caInicial * Math.exp(-k * tempo);
+}
+
+function calcularMonod(muMax, y, ks, caInicial, tempo) {
+  const rhs = (muMax / y) * tempo + caInicial;
+  let ca = caInicial;
+  let iteracoes = 0;
+  const maxIteracoes = 100;
+  const tolerancia = 1e-6;
+
+  while (iteracoes < maxIteracoes) {
+    const func = ca + ks * Math.log(ca) - rhs;
+    const derivada = 1 + ks / ca;
+
+    const caNova = ca - func / derivada;
+
+    if (Math.abs(caNova - ca) < tolerancia) {
+      return caNova;
+    }
+
+    ca = caNova;
+    iteracoes++;
+  }
+
+  return null;
+}
 
 function converterTempoParaSegundos(tempo, unidade) {
   switch (unidade) {
@@ -144,4 +110,81 @@ function converterTempoParaSegundos(tempo, unidade) {
     default:
       return tempo; // Já está em segundos
   }
+}
+
+function gerarGrafico(caInicial, tempo, model, parametros) {
+  const ctx = document.getElementById('concentrationChart').getContext('2d');
+
+  // Limpar gráfico anterior, se existir
+  if (window.graficoAtual) {
+    window.graficoAtual.destroy();
+  }
+
+  const dadosX = [];
+  const dadosY = [];
+
+  for (let t = 0; t <= tempo; t += tempo / 10) {
+    let concentracao = null;
+    if (model === 'model1') {
+      concentracao = calcularOrdemZero(parametros['k₀'], caInicial, t);
+    } else if (model === 'model2') {
+      concentracao = calcularOrdemUm(parametros['k₁'], caInicial, t);
+    } else if (model === 'model3') {
+      concentracao = calcularMonod(parametros['μₘₐₓ'], parametros['Y'], parametros['Kₛ'], caInicial, t);
+    }
+
+    if (concentracao !== null) {
+      dadosX.push((t / 86400).toFixed(2)); // Converter para dias
+      dadosY.push(concentracao);
+    }
+  }
+
+  window.graficoAtual = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dadosX,
+      datasets: [{
+        label: 'Concentração (mg/L)',
+        data: dadosY,
+        borderColor: '#FF6347', // Tomato red for contrast
+        backgroundColor: 'rgba(255, 99, 71, 0.2)', // Lighter red background
+        tension: 0.1,
+      }],
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Tempo (dias)',
+            color: '#fff', // Texto branco para contraste
+          },
+          ticks: {
+            color: '#fff', // Cor dos ticks em branco
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Concentração (mg/L)',
+            color: '#fff', // Texto branco para contraste
+          },
+          ticks: {
+            color: '#fff', // Cor dos ticks em branco
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          labels: {
+            color: '#fff', // Cor da legenda em branco
+          },
+        },
+      },
+    },
+  });
+
+  // Tornar o container do gráfico visível
+  document.getElementById('chart-container').classList.remove('hidden');
 }
